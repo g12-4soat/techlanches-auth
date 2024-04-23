@@ -4,7 +4,6 @@ using Amazon.Lambda.APIGatewayEvents;
 using Amazon.Lambda.Core;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using System.Text.RegularExpressions;
 using TechLanchesLambda.AWS.Options;
 using TechLanchesLambda.DTOs;
 using TechLanchesLambda.Service;

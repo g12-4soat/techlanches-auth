@@ -2,7 +2,10 @@
 using Amazon.CognitoIdentityProvider;
 using Amazon.CognitoIdentityProvider.Model;
 using Amazon.Extensions.CognitoAuthentication;
+using Amazon.Runtime.Internal;
 using Microsoft.Extensions.Options;
+using System.Collections;
+using TechLanchesLambda.AWS.Options;
 using TechLanchesLambda.DTOs;
 using TechLanchesLambda.Utils;
 
@@ -19,7 +22,14 @@ public class CognitoService : ICognitoService
     private readonly AWS.Options.AWSOptions _awsOptions;
     private readonly AmazonCognitoIdentityProviderClient _client;
     private readonly AmazonCognitoIdentityProviderClient _provider;
-  
+
+    public CognitoService(IOptions<AWS.Options.AWSOptions> awsOptions, AmazonCognitoIdentityProviderClient client, AmazonCognitoIdentityProviderClient provider)
+    {
+        _awsOptions = awsOptions.Value;
+        _client = client;
+        _provider = provider;
+    }
+
     public CognitoService(IOptions<AWS.Options.AWSOptions> awsOptions)
     {
         ArgumentNullException.ThrowIfNull(awsOptions);
@@ -34,52 +44,39 @@ public class CognitoService : ICognitoService
         if (await UsuarioJaExiste(user))
         {
             var ehUsuarioPadrao = user.Cpf.Equals(_awsOptions.UserTechLanches);
-            return ehUsuarioPadrao ? Resultado.Ok() : Resultado.Falha("Usuário já cadastrado. Por favor tente autenticar");
+            return ehUsuarioPadrao ? Resultado.Ok() : Resultado.Falha("Usuário já cadastrado. Por favor tente autenticar.");
         }
 
-        var input = new SignUpRequest
-        {
-            ClientId = _awsOptions.UserPoolClientId,
-            Username = user.Cpf,
-            Password = _awsOptions.PasswordDefault,
-            UserAttributes = new List<AttributeType>
-            {
-                new AttributeType {Name = "email", Value = user.Email },
-                new AttributeType {Name = "name", Value = user.Nome }
-            }
-        };
-
-        var signUpResponse = await _client.SignUpAsync(input);
-
-        if (signUpResponse.HttpStatusCode != System.Net.HttpStatusCode.OK)
-            return Resultado.Falha("Houve algo de errado ao cadastrar o usuário");
-
-        var confirmRequest = new AdminConfirmSignUpRequest
-        {
-            Username = user.Cpf,
-            UserPoolId = _awsOptions.UserPoolId
-        };
-
-        await _client.AdminConfirmSignUpAsync(confirmRequest);
-        return Resultado.Ok();
-    }
-
-    private async Task<bool> UsuarioJaExiste(UsuarioDto usuario)
-    {
         try
         {
-            var adminUser = new AdminGetUserRequest()
+            var input = new SignUpRequest
             {
-                Username = usuario.Cpf,
-                UserPoolId = _awsOptions!.UserPoolId
+                ClientId = _awsOptions.UserPoolClientId,
+                Username = user.Cpf,
+                Password = _awsOptions.PasswordDefault,
+                UserAttributes = new List<AttributeType>
+                {
+                    new AttributeType {Name = "email", Value = user.Email },
+                    new AttributeType {Name = "name", Value = user.Nome }
+                }
             };
 
-            await _client.AdminGetUserAsync(adminUser);
-            return true;
+            var signUpResponse = await _client.SignUpAsync(input);
+
+            if (signUpResponse.HttpStatusCode != System.Net.HttpStatusCode.OK)
+                return Resultado.Falha("Houve algo de errado ao cadastrar o usuário.");
+
+            var confirmRequest = new AdminConfirmSignUpRequest
+            {
+                Username = user.Cpf,
+                UserPoolId = _awsOptions.UserPoolId
+            };
+
+            return await UsuarioConfirmado(confirmRequest);
         }
-        catch (UserNotFoundException)
+        catch (NotAuthorizedException)
         {
-            return false;
+            return Resultado.Falha<TokenDto>("Usuário não autorizado para cadastro com os dados informados.");
         }
     }
 
@@ -109,7 +106,43 @@ public class CognitoService : ICognitoService
         }
         catch (UserNotFoundException)
         {
-            return Resultado.Falha<TokenDto>("Usuário não existente com os dados informados.");
+            return Resultado.Falha<TokenDto>("Usuário não encontrado com os dados informados.");
+        }
+        catch (NotAuthorizedException)
+        {
+            return Resultado.Falha<TokenDto>("Usuário não autorizado com os dados informados.");
+        }
+    }
+
+    private async Task<bool> UsuarioJaExiste(UsuarioDto usuario)
+    {
+        try
+        {
+            var adminUser = new AdminGetUserRequest()
+            {
+                Username = usuario.Cpf,
+                UserPoolId = _awsOptions!.UserPoolId
+            };
+
+            await _client.AdminGetUserAsync(adminUser);
+            return true;
+        }
+        catch (UserNotFoundException)
+        {
+            return false;
+        }
+    }
+
+    protected async Task<Resultado> UsuarioConfirmado(AdminConfirmSignUpRequest confirmRequest)
+    {
+        try
+        {
+            await _client.AdminConfirmSignUpAsync(confirmRequest);
+            return Resultado.Ok();
+        }
+        catch (NotAuthorizedException)
+        {
+            return Resultado.Falha("Não foi possível confirmar o usuário.");
         }
     }
 }
