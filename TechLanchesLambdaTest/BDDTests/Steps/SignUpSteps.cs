@@ -34,6 +34,17 @@ namespace TechLanchesLambdaTest.BDDTests.Steps
             ThenRetornaOResultadoSucesso();
         }
 
+        [Fact(DisplayName = "Cadastro do usuário techlanches")]
+        [Trait("SignUp|Cenário", "Cadastrando usuário techlanches")]
+        public async Task CadastrandoUsuarioTechLanches()
+        {
+            GivenQueOUsuarioETechLanches();
+            GivenSejaInexistente();
+            WhenCadastraOUsuario();
+            await WhenConfirmaOUsuario();
+            ThenRetornaOResultadoSucesso();
+        }
+
         [Fact(DisplayName = "Usuário Existente")]
         [Trait("SignUp|Cenário", "Usuário já cadastrado")]
         public async Task UsuarioJaCadastrado()
@@ -82,6 +93,11 @@ namespace TechLanchesLambdaTest.BDDTests.Steps
         private void GivenQueOsDadosDoUsuarioSaoValidos()
         {
             _usuario = _signUpFixture.GerarUsuario();
+        }
+
+        private void GivenQueOUsuarioETechLanches()
+        {
+            _usuario = _signUpFixture.GerarUsuarioTechLanches();
         }
 
         private void GivenSejaDiferenteDoUsuarioTechlanches()

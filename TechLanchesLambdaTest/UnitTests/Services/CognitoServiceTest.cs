@@ -91,6 +91,21 @@ namespace TechLanchesLambdaTest.UnitTests.Services
             Assert.Equal(_cognitoServiceFixture.ObterMensagemFalha("usuario_cadastrado"), result.Notificacoes.First().Mensagem);
         }
 
+        [Fact(DisplayName = "Sign up de usuário inexistente com falha na confirmação")]
+        public async Task SignUp_UsuarioInexistenteEHouveFalhaNaConfirmacao_DeveRetornarFalha()
+        {
+            // Arrange
+            var user = _cognitoServiceFixture.GerarUsuario();
+            _cognitoService.SignUp(user).Returns(Task.FromResult(Resultado.Falha(_cognitoServiceFixture.ObterMensagemFalha("falha_ao_confirmar_usuario"))));
+
+            // Act
+            var result = await _cognitoService.SignUp(user);
+
+            // Assert
+            Assert.True(result.Falhou);
+            Assert.Equal(_cognitoServiceFixture.ObterMensagemFalha("falha_ao_confirmar_usuario"), result.Notificacoes.First().Mensagem);
+        }
+
         [Fact(DisplayName = "Sign in de usuário cadastrado com sucesso")]
         public async Task SignIn_UsuarioCadastrado_DeveRetornarAutenticacaoComSucesso()
         {
