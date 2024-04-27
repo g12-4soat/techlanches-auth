@@ -34,7 +34,7 @@ jobs:
       run: dotnet build Serverless/**/*.csproj
       
     - name: Test
-      run: dotnet test TechLanchesLambdaTest/*.csproj --no-restore --verbosity normal
+      run: dotnet test **/*.csproj --no-restore --verbosity normal
 
 ##############################################################
 
