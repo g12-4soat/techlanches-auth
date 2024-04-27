@@ -15,9 +15,7 @@ jobs:
 
   build-and-test:
    runs-on: ubuntu-latest
-   defaults:
-        run:
-          working-directory: src
+   
    steps:
     - name: Checkout code
       uses: actions/checkout@v2
@@ -28,13 +26,13 @@ jobs:
         dotnet-version: 8.x
         
     - name: Restore NuGet packages
-      run: dotnet restore Serverless/**/*.csproj
+      run: dotnet restore src/Serverless/**/*.csproj
   
     - name: Build
-      run: dotnet build Serverless/**/*.csproj
+      run: dotnet build src/Serverless/**/*.csproj
       
     - name: Test
-      run: dotnet test **/*.csproj --no-restore --verbosity normal
+      run: dotnet test TechLanchesLambdaTest/**/*.csproj --no-restore --verbosity normal
 
 ##############################################################
 
