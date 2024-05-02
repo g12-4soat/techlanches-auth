@@ -7,7 +7,7 @@ Repositório dedicado ao projeto de autenticação do TechChallenge da FIAP - Tu
 
 # Descrição
 
-Este projeto faz parte do curso de pós-graduação em Arquitetura de Software oferecido pela FIAP. Nosso objetivo é demonstrar como implementamos os recursos AWS que são necessários para o cadastro e autenticação do usuário na aplicação Tech Lanches.
+Este projeto faz parte do curso de pós-graduação em Arquitetura de Software oferecido pela FIAP. Nosso objetivo é demonstrar como implementamos os recursos AWS que são necessários para o Sign In e Sign Up do usuário na aplicação Tech Lanches.
 
 # Documentação
 
@@ -24,40 +24,42 @@ Este projeto faz parte do curso de pós-graduação em Arquitetura de Software o
 ## Executando o Projeto
 O procedimento para executar o Terraform local é simples e leva poucos passos: 
 
-1. Clone o repositório: _[https://github.com/g12-4soat/techlanches-lambda-auth](https://github.com/g12-4soat/techlanches-lambda-auth.git)_
+1. Clone o repositório: _[https://github.com/g12-4soat/techlanches-auth](https://github.com/g12-4soat/techlanches-auth.git)_
  
-1. Abra a pasta via linha de comando no diretório escolhido no **passo 1**. _Ex.: c:\> cd “c:/techlanches-lambda-auth”_
+1. Abra a pasta via linha de comando no diretório escolhido no **passo 1**. _Ex.: c:\> cd “c:/techlanches-auth”_
 
 ## Gerando zip das functions .NET
 Da raiz do repositório, execute os seguintes comandos no terminal:
 
 ### Instalando Tools .NET AWS Lambda 
-> c:\techlanches-lambda-auth> dotnet tool install -g Amazon.Lambda.Tools
+> c:\techlanches-auth> dotnet tool install -g Amazon.Lambda.Tools
 
 ### Gerando zip das functions .NET
-> c:\techlanches-lambda-auth> dotnet lambda package --project-location  src/Serverless/LambdaAuth/ --output-package src/Serverless/auth_lambda.zip --configuration Release --framework net8.0
+> c:\techlanches-auth> dotnet lambda package --project-location  src/Serverless/LambdaAuth/ --output-package src/Serverless/auth_lambda.zip --configuration Release --framework net8.0
 
 
 ## Rodando Terraform
 
-Da raiz do repositório, entre no diretório ./src/terraform (onde se encontram todos os scripts Terraform), e execute os seguintes comandos no terminal:
+1. Clone o repositório: _[https://github.com/g12-4soat/techlanches-iac](https://github.com/g12-4soat/techlanches-iac.git)_
+ 
+1. Da raiz do repositório, entre no diretório ./src/terraform-api-gateway (onde se encontram todos os scripts Terraform necessários para este projeto), e execute os seguintes comandos no terminal:
 
 ### Iniciando o Terraform 
-> c:\techlanches-lambda-auth/src/terraform> terraform init
+> c:\techlanches-iac/src/terraform-api-gateway> terraform init
 
 ### Validando script Terraform
-> c:\techlanches-lambda-auth/src/terraform> terraform validate
+> c:\techlanches-iac/src/terraform-api-gateway> terraform validate
 
 ### Verificando plano de implantação do script 
-> c:\techlanches-lambda-auth/src/terraform> terraform plan
+> c:\techlanches-iac/src/terraform-api-gateway> terraform plan
 
 ### Aplicando plano de implantação do script 
-> c:\techlanches-lambda-auth/src/terraform> terraform apply
+> c:\techlanches-iac/src/terraform-api-gateway> terraform apply
 
 ## Postman 
 Para importar as collections do postman, basta acessar os links a seguir:
-- Collection: https://github.com/g12-4soat/techlanches-lambda-auth/blob/main/docs/fase3/LambdaTechLanches.postman_collection.json
-- Local Environment: https://github.com/g12-4soat/techlanches-lambda-auth/blob/main/docs/fase3/TechLanchesGateway.postman_environment.json
+- Collection: https://github.com/g12-4soat/techlanches-auth/blob/main/docs/fase3/LambdaTechLanches.postman_collection.json
+- Local Environment: https://github.com/g12-4soat/techlanches-auth/blob/main/docs/fase3/TechLanchesGateway.postman_environment.json
 
 > Quando uma nova instância do API Gateway é criada, uma nova URL é gerada, exigindo a atualização manual da URL na Enviroment do Postman.
   ---
