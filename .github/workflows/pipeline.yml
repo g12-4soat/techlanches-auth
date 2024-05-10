@@ -80,7 +80,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GTH_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: | 
-          ./.sonar/scanner/dotnet-sonarscanner begin /k:"g12-4soat_techlanches-auth" /o:"g12-4soat" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths=techlanches-auth/techlanches-auth/TechLanchesLambdaTest/coverage.opencover.xml
+          ./.sonar/scanner/dotnet-sonarscanner begin /k:"g12-4soat_techlanches-auth" /o:"g12-4soat" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths=TechLanchesLambdaTest/coverage.opencover.xml
           dotnet build LambdaAuth.sln --configuration Release
           dotnet test TechLanchesLambdaTest/*.csproj /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
           ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
