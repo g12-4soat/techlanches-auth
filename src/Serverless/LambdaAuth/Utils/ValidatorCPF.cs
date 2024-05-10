@@ -45,6 +45,13 @@ public static class ValidatorCPF
 
     public static string LimparCpf(string cpf)
     {
-        return Regex.Replace(cpf.Trim(), @"[^\d]", "");
+        try
+        {
+            return Regex.Replace(cpf.Trim(), @"[^\d]", "");
+        }
+        catch (Exception)
+        {
+            return null;
+        }
     }
 }

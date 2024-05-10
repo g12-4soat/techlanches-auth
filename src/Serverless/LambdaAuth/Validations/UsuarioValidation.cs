@@ -4,14 +4,6 @@ using TechLanchesLambda.Utils;
 
 namespace TechLanchesLambda.Validations;
 
-public class UsuarioAuthValidation : AbstractValidator<UsuarioDto>
-{
-    public UsuarioAuthValidation()
-    {
-        
-    }
-}
-
 public class UsuarioCadastroValidation : AbstractValidator<UsuarioDto>
 {
     public UsuarioCadastroValidation()
