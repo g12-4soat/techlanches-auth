@@ -11,19 +11,15 @@ using TechLanchesLambda.Utils;
 
 namespace TechLanchesLambda.Service;
 
-public interface ICognitoService
-{
-    Task<Resultado> SignUp(UsuarioDto usuario);
-    Task<Resultado<TokenDto>> SignIn(string userName);
-}
+
 
 public class CognitoService : ICognitoService
 {
     private readonly AWS.Options.AWSOptions _awsOptions;
-    private readonly AmazonCognitoIdentityProviderClient _client;
-    private readonly AmazonCognitoIdentityProviderClient _provider;
+    private readonly IAmazonCognitoIdentityProvider _client;
+    private readonly IAmazonCognitoIdentityProvider _provider;
 
-    public CognitoService(IOptions<AWS.Options.AWSOptions> awsOptions, AmazonCognitoIdentityProviderClient client, AmazonCognitoIdentityProviderClient provider)
+    public CognitoService(IOptions<AWS.Options.AWSOptions> awsOptions, IAmazonCognitoIdentityProvider client, IAmazonCognitoIdentityProvider provider)
     {
         _awsOptions = awsOptions.Value;
         _client = client;
