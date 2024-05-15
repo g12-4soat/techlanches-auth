@@ -16,14 +16,10 @@ namespace TechLanchesLambdaTest.UnitTests.Fixtures
 
 
         public UsuarioDto GerarUsuario()
-        {
-            return new UsuarioDto { Cpf = "958.315.760-00", Email = "test@example.com", Nome = "Test User" };
-        }
+            => new UsuarioDto { Cpf = "958.315.760-00", Email = "test@example.com", Nome = "Test User" };
 
         public UsuarioDto GerarUsuarioTechLanches()
-        {
-            return new UsuarioDto { Cpf = "techlanches", Email = "techlanches@example.com", Nome = "techlanches" };
-        }
+            => new UsuarioDto { Cpf = "techlanches", Email = "techlanches@example.com", Nome = "techlanches" };
 
         public TokenDto GerarToken()
         {
@@ -35,6 +31,17 @@ namespace TechLanchesLambdaTest.UnitTests.Fixtures
 
             return new TokenDto(authResultType.IdToken, authResultType.AccessToken);
         }
+
+        public OptionsDto GerarOptionsAws()
+            => new OptionsDto
+                            {
+                                Region = "us-east-1",
+                                UserPoolId = "us-east-1_dFgU6KROw",
+                                UserPoolClientId = "3nts1rf3ejvc1lm788ro83qr8j",
+                                PasswordDefault = "$Testt@1235$#1;",
+                                EmailDefault = "teste.xpto@gmail.com",
+                                UserTechLanches = "techlanches"
+                            };
 
         public string ObterMensagemFalha(string nomeMensagem)
         {
