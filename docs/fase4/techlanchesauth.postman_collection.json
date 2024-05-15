@@ -1,0 +1,102 @@
+{
+	"info": {
+		"_postman_id": "041455c8-518f-4e21-95be-01a985269629",
+		"name": "Tech Lanches Fase 4 Auth",
+		"description": "Tech Lanches API Swagger\n\nContact Support:\n Name: Tech Lanches\n Email: g12.4soat.fiap@outlook.com",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "11389340"
+	},
+	"item": [
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "Auth - Não Identificado",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"cpf\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{authUrl}}/Development/auth"
+					},
+					"response": []
+				},
+				{
+					"name": "Auth - Identificado",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"cpf\": \"17536410395\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{authUrl}}/Development/auth"
+					},
+					"response": []
+				},
+				{
+					"name": "Cadastro",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"cpf\": \"17536410395\",\r\n    \"email\": \"teste@teste.com\",\r\n    \"nome\": \"tech\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{authUrl}}/Development/cadastro",
+							"host": [
+								"{{authUrl}}"
+							],
+							"path": [
+								"Development",
+								"cadastro"
+							],
+							"query": [
+								{
+									"key": "cpf",
+									"value": "\"04255081026\"",
+									"disabled": true
+								},
+								{
+									"key": "email",
+									"value": "teste@teste.com",
+									"disabled": true
+								},
+								{
+									"key": "nome",
+									"value": "Nicolas",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "/"
+		}
+	]
+}
