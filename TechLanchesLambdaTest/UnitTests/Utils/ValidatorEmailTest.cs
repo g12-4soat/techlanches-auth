@@ -1,18 +1,27 @@
-﻿using TechLanchesLambda.Utils;
+﻿using NSubstitute;
+using TechLanchesLambda.Utils;
+using TechLanchesLambdaTest.UnitTests.Fixtures;
 
 namespace TechLanchesLambdaTest.UnitTests.Utils
 {
     [Trait("Utils", "ValidatorEmail")]
-    public class ValidatorEmailTest
+    public class ValidatorEmailTest : IClassFixture<UtilsFixture>
     {
+        private readonly UtilsFixture _utilsFixture;
+
+        public ValidatorEmailTest(UtilsFixture utilsFixture)
+        {
+            _utilsFixture = utilsFixture;
+        }
+
         [Fact(DisplayName = "Validador de E-mail efetuado com sucesso")]
         public void ValidatorEmail_Validar_DeveRetornarEmailComSucesso()
         {
             // Arrange
-            string fakeEmail = "test.xpto@gmail.com";
+            string email = _utilsFixture.GerarEmailValido();
 
             //// Act
-            var res = ValidatorEmail.Validar(fakeEmail);
+            var res = ValidatorEmail.Validar(email);
 
             //// Assert
             Assert.True(res);
@@ -23,10 +32,10 @@ namespace TechLanchesLambdaTest.UnitTests.Utils
         public void ValidatorEmail_ValidarEmailInvalido_DeveRetornarEmailComFalha()
         {
             // Arrange
-            string fakeEmail = "test.xpto@gmail";
+            string email = _utilsFixture.GerarEmailInvalido();
 
             //// Act
-            var res = ValidatorEmail.Validar(fakeEmail);
+            var res = ValidatorEmail.Validar(email);
 
             //// Assert
             Assert.False(res);

@@ -9,14 +9,7 @@ public static class ValidatorEmail
         if (string.IsNullOrWhiteSpace(email))
             return false;
 
-        try
-        {
-            string pattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
-            return Regex.IsMatch(email, pattern, RegexOptions.IgnoreCase);
-        }
-        catch (RegexMatchTimeoutException)
-        {
-            return false;
-        }
+        string pattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+        return Regex.IsMatch(email, pattern, RegexOptions.IgnoreCase);
     }
 }
