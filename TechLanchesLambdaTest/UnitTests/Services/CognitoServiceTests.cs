@@ -52,6 +52,7 @@ namespace TechLanchesLambdaTest.UnitTests.Services
             // Act
             var result = await cognitoService.SignUp(userDto);
 
+
             // Assert
             Assert.True(result.Sucesso);
         }
