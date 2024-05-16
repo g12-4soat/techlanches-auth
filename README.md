@@ -64,7 +64,6 @@ Para importar as collections do postman, basta acessar os links a seguir:
 > Quando uma nova instância do API Gateway é criada, uma nova URL é gerada, exigindo a atualização manual da URL na Enviroment do Postman.
   ---
 
-
 </details>
 
 <details>
