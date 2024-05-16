@@ -85,7 +85,6 @@ Para importar as collections do postman, basta acessar os links a seguir:
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=g12-4soat_techlanches-auth&metric=coverage)](https://sonarcloud.io/summary/new_code?id=g12-4soat_techlanches-auth)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=g12-4soat_techlanches-auth&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=g12-4soat_techlanches-auth)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=g12-4soat_techlanches-auth&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=g12-4soat_techlanches-auth)
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=g12-4soat_techlanches-auth&metric=bugs)](https://sonarcloud.io/summary/new_code?id=g12-4soat_techlanches-auth)
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=g12-4soat_techlanches-auth&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=g12-4soat_techlanches-auth)
 
 ---
