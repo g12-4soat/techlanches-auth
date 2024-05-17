@@ -57,6 +57,19 @@ jobs:
           path: ~\sonar\cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
+
+      - name: Install Coverlet
+        run: dotnet tool install --global coverlet.console
+
+      - name: Build and analyze
+        env:
+          GITHUB_TOKEN: ${{ secrets.GTH_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: | 
+          ./.sonar/scanner/dotnet-sonarscanner begin /k:"g12-4soat_techlanches-auth" /o:"g12-4soat" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths=TechLanchesLambdaTest/coverage.opencover.xml
+          dotnet build LambdaAuth.sln --configuration Release
+          dotnet test TechLanchesLambdaTest/*.csproj /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+          ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
           
       - name: Cache SonarCloud scanner
         id: cache-sonar-scanner
@@ -71,19 +84,6 @@ jobs:
         run: |
           mkdir -p ./.sonar/scanner
           dotnet tool update dotnet-sonarscanner --tool-path ./.sonar/scanner
-
-      - name: Install Coverlet
-        run: dotnet tool install --global coverlet.console
-
-      - name: Build and analyze
-        env:
-          GITHUB_TOKEN: ${{ secrets.GTH_TOKEN }}  # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: | 
-          ./.sonar/scanner/dotnet-sonarscanner begin /k:"g12-4soat_techlanches-auth" /o:"g12-4soat" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths=TechLanchesLambdaTest/coverage.opencover.xml
-          dotnet build LambdaAuth.sln --configuration Release
-          dotnet test TechLanchesLambdaTest/*.csproj /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
-          ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
 
       - name: Get current analysisId
         id: get-analysis-id
