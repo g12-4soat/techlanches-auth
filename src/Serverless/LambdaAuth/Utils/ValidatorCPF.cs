@@ -47,7 +47,7 @@ public static class ValidatorCPF
     {
         try
         {
-            return Regex.Replace(cpf.Trim(), @"[^\d]", "");
+            return Regex.Replace(cpf.Trim(), @"[^\d]", "", RegexOptions.None, TimeSpan.FromSeconds(30));
         }
         catch (Exception)
         {
