@@ -69,6 +69,7 @@ public class CognitoService : ICognitoService
             };
 
             return await UsuarioConfirmado(confirmRequest);
+
         }
         catch (NotAuthorizedException)
         {
@@ -95,6 +96,7 @@ public class CognitoService : ICognitoService
                 return Resultado.Ok(new TokenDto(authResponse.AuthenticationResult.IdToken, authResponse.AuthenticationResult.AccessToken));
 
             return Resultado.Falha<TokenDto>("Ocorreu um erro ao fazer login.");
+
         }
         catch (UserNotConfirmedException)
         {

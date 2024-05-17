@@ -15,6 +15,7 @@ public static class Response
             Body = JsonConvert.SerializeObject(notificacoes),
             Headers = new Dictionary<string, string> { { "Content-Type", "application/json" } }
         };
+
     }
 
     public static APIGatewayProxyResponse BadRequest(string mensagem)
@@ -25,6 +26,7 @@ public static class Response
             Body = JsonConvert.SerializeObject(new NotificacaoDto(mensagem)),
             Headers = new Dictionary<string, string> { { "Content-Type", "application/json" } }
         };
+
     }
 
     public static APIGatewayProxyResponse Ok(object body)
@@ -35,5 +37,6 @@ public static class Response
             Body = JsonConvert.SerializeObject(body),
             Headers = new Dictionary<string, string> { { "Content-Type", "application/json" } }
         };
+
     }
 }
