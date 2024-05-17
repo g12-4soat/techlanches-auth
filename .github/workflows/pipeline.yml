@@ -51,19 +51,6 @@ jobs:
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
 
-      - name: Install Coverlet
-        run: dotnet tool install --global coverlet.console
-
-      - name: Build and analyze
-        env:
-          GITHUB_TOKEN: ${{ secrets.GTH_TOKEN }}  # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: | 
-          ./.sonar/scanner/dotnet-sonarscanner begin /k:"g12-4soat_techlanches-auth" /o:"g12-4soat" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths=TechLanchesLambdaTest/coverage.opencover.xml
-          dotnet build LambdaAuth.sln --configuration Release
-          dotnet test TechLanchesLambdaTest/*.csproj /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
-          ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
-
       - name: Cache SonarCloud packages
         uses: actions/cache@v3
         with:
@@ -83,7 +70,20 @@ jobs:
         if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
         run: |
           mkdir -p ./.sonar/scanner
-          dotnet tool update dotnet-sonarscanner --tool-path ./.sonar/scanner
+          dotnet tool update dotnet-sonarscanner --tool-path ./.sonar/scanner          
+
+      - name: Install Coverlet
+        run: dotnet tool install --global coverlet.console
+
+      - name: Build and analyze
+        env:
+          GITHUB_TOKEN: ${{ secrets.GTH_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: | 
+          ./.sonar/scanner/dotnet-sonarscanner begin /k:"g12-4soat_techlanches-auth" /o:"g12-4soat" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths=TechLanchesLambdaTest/coverage.opencover.xml
+          dotnet build LambdaAuth.sln --configuration Release
+          dotnet test TechLanchesLambdaTest/*.csproj /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+          ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
 
       - name: Get current analysisId
         id: get-analysis-id
