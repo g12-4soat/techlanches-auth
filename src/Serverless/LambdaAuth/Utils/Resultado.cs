@@ -66,6 +66,5 @@ public class Resultado<T> : Resultado
         Value = value;
     }
 
-
     public T Value { get; set; }
 }

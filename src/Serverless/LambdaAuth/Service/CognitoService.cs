@@ -40,7 +40,7 @@ public class CognitoService : ICognitoService
         if (await UsuarioJaExiste(user))
         {
             var ehUsuarioPadrao = user.Cpf.Equals(_awsOptions.UserTechLanches);
-            return ehUsuarioPadrao ? Resultado.Ok() : Resultado.Falha("Usuário já cadastrado. Por favor tente autenticar.");
+            return ehUsuarioPadrao ? Resultado.Ok() : Resultado.Falha("Usuário já cadastrado. Por favor tente autenticarr.");
         }
 
         try
@@ -73,7 +73,7 @@ public class CognitoService : ICognitoService
         }
         catch (NotAuthorizedException)
         {
-            return Resultado.Falha<TokenDto>("Usuário não autorizado para cadastro com os dados informados.");
+            return Resultado.Falha<TokenDto>("Usuário não autorizado para cadastro com os dados informadoss.");
         }
     }
 
@@ -95,7 +95,7 @@ public class CognitoService : ICognitoService
             if (authResponse.AuthenticationResult != null)
                 return Resultado.Ok(new TokenDto(authResponse.AuthenticationResult.IdToken, authResponse.AuthenticationResult.AccessToken));
 
-            return Resultado.Falha<TokenDto>("Ocorreu um erro ao fazer login.");
+            return Resultado.Falha<TokenDto>("Ocorreu um erro ao fazer loginn.");
 
         }
         catch (UserNotConfirmedException)
@@ -140,7 +140,7 @@ public class CognitoService : ICognitoService
         }
         catch (NotAuthorizedException)
         {
-            return Resultado.Falha("Não foi possível confirmar o usuário.");
+            return Resultado.Falha("Não foi possível confirmar o usuárioo.");
         }
     }
 }
