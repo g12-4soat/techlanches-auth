@@ -10,6 +10,6 @@ public static class ValidatorEmail
             return false;
 
         string pattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
-        return Regex.IsMatch(email, pattern, RegexOptions.IgnoreCase);
+        return Regex.IsMatch(email, pattern, RegexOptions.None, TimeSpan.FromSeconds(30));
     }
 }

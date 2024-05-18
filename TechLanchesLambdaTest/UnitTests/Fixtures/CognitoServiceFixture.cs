@@ -8,11 +8,11 @@ namespace TechLanchesLambdaTest.UnitTests.Fixtures
         private const string MENSAGEM_USUARIO_NAO_CONFIRMADO = "Usuário não confirmado.";
         private const string MENSAGEM_USUARIO_NAO_AUTORIZADO = "Usuário não autorizado com os dados informados.";
         private const string MENSAGEM_USUARIO_NAO_ENCONTRADO = "Usuário não encontrado com os dados informados.";
-        private const string MENSAGEM_USUARIO_INVALIDO = "Ocorreu um erro ao fazer login.";
-        private const string MENSAGEM_USUARIO_CADASTRADO = "Usuário já cadastrado. Por favor tente autenticar.";
-        private const string MENSAGEM_USUARIO_NAO_AUTORIZADO_CADASTRO = "Usuário não autorizado para cadastro com os dados informados.";
+        private const string MENSAGEM_USUARIO_INVALIDO = "Ocorreu um erro ao fazer loginn.";
+        private const string MENSAGEM_USUARIO_CADASTRADO = "Usuário já cadastrado. Por favor tente autenticarr.";
+        private const string MENSAGEM_USUARIO_NAO_AUTORIZADO_CADASTRO = "Usuário não autorizado para cadastro com os dados informadoss.";
         private const string MENSAGEM_STATUS_CODE_DIFERENTE_OK = "Houve algo de errado ao cadastrar o usuário.";
-        private const string MENSAGEM_FALHA_AO_CONFIRMAR_USUARIO = "Não foi possível confirmar o usuário.";
+        private const string MENSAGEM_FALHA_AO_CONFIRMAR_USUARIO = "Não foi possível confirmar o usuárioo.";
 
 
         public UsuarioDto GerarUsuario()

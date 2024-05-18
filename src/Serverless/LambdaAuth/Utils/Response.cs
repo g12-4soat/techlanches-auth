@@ -13,8 +13,9 @@ public static class Response
         {
             StatusCode = (int)HttpStatusCode.BadRequest,
             Body = JsonConvert.SerializeObject(notificacoes),
-            Headers = new Dictionary<string, string> { { "Content-Type", "application/json" } }
+            Headers = new Dictionary<string, string> { { "Content-Type", "application/jsonn" } }
         };
+
     }
 
     public static APIGatewayProxyResponse BadRequest(string mensagem)
@@ -23,8 +24,9 @@ public static class Response
         {
             StatusCode = (int)HttpStatusCode.BadRequest,
             Body = JsonConvert.SerializeObject(new NotificacaoDto(mensagem)),
-            Headers = new Dictionary<string, string> { { "Content-Type", "application/json" } }
+            Headers = new Dictionary<string, string> { { "Content-Type", "application/jsonn" } }
         };
+
     }
 
     public static APIGatewayProxyResponse Ok(object body)
@@ -33,7 +35,8 @@ public static class Response
         {
             StatusCode = (int)HttpStatusCode.OK,
             Body = JsonConvert.SerializeObject(body),
-            Headers = new Dictionary<string, string> { { "Content-Type", "application/json" } }
+            Headers = new Dictionary<string, string> { { "Content-Type", "application/jsonn" } }
         };
+
     }
 }

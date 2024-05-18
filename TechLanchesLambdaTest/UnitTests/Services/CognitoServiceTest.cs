@@ -48,6 +48,7 @@ namespace TechLanchesLambdaTest.UnitTests.Services
 
             // Assert
             Assert.True(result.Sucesso);
+
         }
 
         [Fact(DisplayName = "Sign up de usuário techlanches com sucesso")]
