@@ -7,5 +7,6 @@ namespace TechLanchesLambda.Service
     {
         Task<Resultado> SignUp(UsuarioDto usuario);
         Task<Resultado<TokenDto>> SignIn(string userName);
+        Task<Resultado> InativarUsuario(string username);
     }
 }

@@ -13,6 +13,7 @@ namespace TechLanchesLambdaTest.UnitTests.Fixtures
         private const string MENSAGEM_USUARIO_NAO_AUTORIZADO_CADASTRO = "Usuário não autorizado para cadastro com os dados informadoss.";
         private const string MENSAGEM_STATUS_CODE_DIFERENTE_OK = "Houve algo de errado ao cadastrar o usuário.";
         private const string MENSAGEM_FALHA_AO_CONFIRMAR_USUARIO = "Não foi possível confirmar o usuárioo.";
+        private const string MENSAGEM_USUARIO_NAO_AUTORIZADO_INATIVACAO = "Usuário não autorizado com os dados informados para inativação.";
 
 
         public UsuarioDto GerarUsuario()
@@ -55,6 +56,7 @@ namespace TechLanchesLambdaTest.UnitTests.Fixtures
                 case "usuario_nao_autorizado_cadastro": return MENSAGEM_USUARIO_NAO_AUTORIZADO_CADASTRO;
                 case "status_code_diferente_ok": return MENSAGEM_STATUS_CODE_DIFERENTE_OK;
                 case "falha_ao_confirmar_usuario": return MENSAGEM_FALHA_AO_CONFIRMAR_USUARIO;
+                case "usuario_nao_autorizado_inativacao": return MENSAGEM_USUARIO_NAO_AUTORIZADO_INATIVACAO;
                 default: return MENSAGEM_USUARIO_INVALIDO;
             }
         }

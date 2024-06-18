@@ -217,6 +217,42 @@ namespace TechLanchesLambdaTest.UnitTests.Services
             await Assert.ThrowsAsync<Exception>(async () => await cognitoService.SignIn(userName));
         }
 
+        //melhorar testes
+
+        [Fact(DisplayName = "Inativação de usuário com falha e status code diferente de Ok")]
+        public async Task InativacaoUsuario_ComFalhaEStatusCode_DiferenteDeOk()
+        {
+            // Arrange
+            var userName = _cognitoServiceFixture.GerarUsuario().Cpf;
+
+            _provider.AdminDisableUserAsync(Arg.Any<AdminDisableUserRequest>())
+                .ThrowsForAnyArgs(new Exception(""));
+
+            var cognitoService = new CognitoService(_awsOptions, _client, _provider);
+            //cognitoService.SignIn(userName).Returns(Task.FromResult(Resultado.Falha<TokenDto>(_cognitoServiceFixture.ObterMensagemFalha("usuario_invalido"))));
+
+            // Act & Assert
+            await Assert.ThrowsAsync<Exception>(async () => await cognitoService.InativarUsuario(userName));
+        }
+
+        [Fact(DisplayName = "Inativação de usuário não autorizado com falha")]
+        public async Task InativacaoUsuario_NaoAutorizado_ComFalha()
+        {
+            // Arrange
+            var userName = _cognitoServiceFixture.GerarUsuario().Cpf;
+
+            _provider.AdminDisableUserAsync(Arg.Any<AdminDisableUserRequest>())
+                .ThrowsForAnyArgs(new NotAuthorizedException(""));
+
+            // Act
+            var cognitoService = new CognitoService(_awsOptions, _client, _provider);
+            var resultado = await cognitoService.InativarUsuario(userName);
+
+            // Assert
+            Assert.False(resultado.Sucesso);
+            Assert.Equal(_cognitoServiceFixture.ObterMensagemFalha("usuario_nao_autorizado_inativacao"), resultado.Notificacoes.First().Mensagem);
+        }
+
         #region Testes com erros ao chamar StartWithAdminNoSrpAuthAsync
         //[Fact(DisplayName = "Sign in de usuário cadastrado com sucesso")]
         //public async Task SignIn_UsuarioCadastrado_DeveRetornarAutenticacaoComSucesso()

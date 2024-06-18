@@ -102,6 +102,44 @@ public class Functions
         }
     }
 
+    [LambdaFunction(Policies = "AWSLambdaBasicExecutionRole", MemorySize = 512, Timeout = 30)]
+    [RestApi(LambdaHttpMethod.Post, "/inativacao")]
+    public async Task<APIGatewayProxyResponse> LambdaInativacao(APIGatewayProxyRequest request,
+                                                 ILambdaContext context,
+                                                 [FromServices] ICognitoService cognitoService,
+                                                 [FromServices] IOptions<AWSOptions> awsOptions)
+    {
+        try
+        {
+            context.Logger.LogInformation("Handling the 'LambdaInativacao' Request");
+
+            ArgumentNullException.ThrowIfNull(awsOptions);
+
+            var usuario = ObterUsuario(request, awsOptions.Value, ehCadastro: false);
+            var usuarioEhPadrao = usuario.Cpf.Equals(awsOptions.Value.UserTechLanches);
+
+            if (usuarioEhPadrao)
+                return Response.BadRequest("Não é possível realizar a inativação deste usuário.");
+
+            var usuarioInativado = await cognitoService.InativarUsuario(usuario.Cpf);
+
+            if (usuarioInativado.Falhou)
+                return Response.BadRequest(usuarioInativado.Notificacoes);
+
+
+            //se resultado positivo consumir endpoint de pagamento para inativacao dos dados
+            //trazer o retorno na tela.
+
+            var tokenResult = "Deu bom!";
+            return !string.IsNullOrEmpty(tokenResult) ? Response.Ok(tokenResult) : Response.BadRequest("Não possui token");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Cadastro Lambda response error: " + ex.Message);
+            throw new Exception(ex.Message);
+        }
+    }
+
     private UsuarioDto ObterUsuario(APIGatewayProxyRequest request, AWSOptions awsOptions, bool ehCadastro)
     {
         var usuario = JsonConvert.DeserializeObject<UsuarioDto>(request.Body) ?? new UsuarioDto();
@@ -114,7 +152,9 @@ public class Functions
         string cpfLimpo = ValidatorCPF.LimparCpf(cpf);
         string email = usuario.Email ?? string.Empty;
         string nome = usuario.Nome ?? string.Empty;
-        var user = new UsuarioDto(string.IsNullOrEmpty(cpfLimpo) ? cpf : cpfLimpo, email, nome);
+        string endereco = usuario.Endereco ?? string.Empty; // verificar se vai criar classe para validar endereço com que será tratado
+        string telefone = usuario.Telefone ?? string.Empty; //+5511948796145 cenário positivo regra de validação criada 
+        var user = new UsuarioDto(string.IsNullOrEmpty(cpfLimpo) ? cpf : cpfLimpo, email, nome, endereco, telefone);
         return user;
     }
 

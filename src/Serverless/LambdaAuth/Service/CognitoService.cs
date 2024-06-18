@@ -53,7 +53,9 @@ public class CognitoService : ICognitoService
                 UserAttributes = new List<AttributeType>
                 {
                     new AttributeType {Name = "email", Value = user.Email },
-                    new AttributeType {Name = "name", Value = user.Nome }
+                    new AttributeType {Name = "name", Value = user.Nome },
+                    new AttributeType {Name = "phone_number", Value = user.Telefone },
+                    new AttributeType {Name = "address", Value = user.Endereco }
                 }
             };
 
@@ -141,6 +143,28 @@ public class CognitoService : ICognitoService
         catch (NotAuthorizedException)
         {
             return Resultado.Falha("Não foi possível confirmar o usuárioo.");
+        }
+    }
+
+    public async Task<Resultado> InativarUsuario(string username)
+    {
+        try
+        {
+            AdminDisableUserRequest adminUser = new AdminDisableUserRequest
+            {
+                Username = username,
+                UserPoolId = _awsOptions.UserPoolId
+            };
+
+            AdminDisableUserResponse response = await _client.AdminDisableUserAsync(adminUser);
+
+            return response.HttpStatusCode == System.Net.HttpStatusCode.OK ? 
+                    Resultado.Ok() : 
+                    Resultado.Falha($"Falha ao inativar usuário com o seguinte statusCode: {response.HttpStatusCode}");
+        }
+        catch (NotAuthorizedException)
+        {
+            return Resultado.Falha($"Falha ao realizar a inativação do usuário");
         }
     }
 }
