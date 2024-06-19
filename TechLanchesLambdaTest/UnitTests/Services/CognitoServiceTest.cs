@@ -217,32 +217,30 @@ namespace TechLanchesLambdaTest.UnitTests.Services
             await Assert.ThrowsAsync<Exception>(async () => await cognitoService.SignIn(userName));
         }
 
-        //melhorar testes
-
         [Fact(DisplayName = "Inativação de usuário com falha e status code diferente de Ok")]
         public async Task InativacaoUsuario_ComFalhaEStatusCode_DiferenteDeOk()
         {
             // Arrange
-            var userName = _cognitoServiceFixture.GerarUsuario().Cpf;
+            var userName = _cognitoServiceFixture.GerarUsuarioLimpo().Cpf;
 
-            _provider.AdminDisableUserAsync(Arg.Any<AdminDisableUserRequest>())
-                .ThrowsForAnyArgs(new Exception(""));
+            _client.AdminDisableUserAsync(Arg.Any<AdminDisableUserRequest>()).Returns(new AdminDisableUserResponse { HttpStatusCode = System.Net.HttpStatusCode.Unauthorized });
 
+            // Act
             var cognitoService = new CognitoService(_awsOptions, _client, _provider);
-            //cognitoService.SignIn(userName).Returns(Task.FromResult(Resultado.Falha<TokenDto>(_cognitoServiceFixture.ObterMensagemFalha("usuario_invalido"))));
+            var resultado = await cognitoService.InativarUsuario(userName);
 
-            // Act & Assert
-            await Assert.ThrowsAsync<Exception>(async () => await cognitoService.InativarUsuario(userName));
+            // Assert
+            Assert.True(resultado.Falhou);
+            Assert.Equal(_cognitoServiceFixture.ObterMensagemFalha("status_code_diferente_ok_inativacao"), resultado.Notificacoes.First().Mensagem);
         }
 
         [Fact(DisplayName = "Inativação de usuário não autorizado com falha")]
         public async Task InativacaoUsuario_NaoAutorizado_ComFalha()
         {
             // Arrange
-            var userName = _cognitoServiceFixture.GerarUsuario().Cpf;
+            var userName = _cognitoServiceFixture.GerarUsuarioLimpo().Cpf;
 
-            _provider.AdminDisableUserAsync(Arg.Any<AdminDisableUserRequest>())
-                .ThrowsForAnyArgs(new NotAuthorizedException(""));
+            _client.AdminDisableUserAsync(Arg.Any<AdminDisableUserRequest>()).Throws(new NotAuthorizedException(""));
 
             // Act
             var cognitoService = new CognitoService(_awsOptions, _client, _provider);
@@ -253,41 +251,21 @@ namespace TechLanchesLambdaTest.UnitTests.Services
             Assert.Equal(_cognitoServiceFixture.ObterMensagemFalha("usuario_nao_autorizado_inativacao"), resultado.Notificacoes.First().Mensagem);
         }
 
-        #region Testes com erros ao chamar StartWithAdminNoSrpAuthAsync
-        //[Fact(DisplayName = "Sign in de usuário cadastrado com sucesso")]
-        //public async Task SignIn_UsuarioCadastrado_DeveRetornarAutenticacaoComSucesso()
-        //{
-        //    // Arrange
-        //    var userName = _cognitoServiceFixture.GerarUsuario().Cpf;
-        //    var idToken = "idToken";
-        //    var accessToken = "accessToken";
+        [Fact(DisplayName = "Inativação de usuário com sucesso")]
+        public async Task InativacaoUsuario_ComSucesso()
+        {
+            // Arrange
+            var userName = _cognitoServiceFixture.GerarUsuarioLimpo().Cpf;
 
-        //    var authResponse = new AdminInitiateAuthResponse
-        //    {
-        //        AuthenticationResult = new AuthenticationResultType
-        //        {
-        //            IdToken = idToken,
-        //            AccessToken = accessToken
-        //        }
-        //    };
-        //    _provider.AdminInitiateAuthAsync(Arg.Any<AdminInitiateAuthRequest>())
-        //        .ReturnsForAnyArgs(Task.FromResult(authResponse));
+            _client.AdminDisableUserAsync(Arg.Any<AdminDisableUserRequest>()).Returns(new AdminDisableUserResponse { HttpStatusCode = System.Net.HttpStatusCode.OK });
 
-        //    var cognitoService = new CognitoService(_awsOptions, _client, _provider);
+            var cognitoService = new CognitoService(_awsOptions, _client, _provider);
 
-        //    // Act
-        //    var resultado = await cognitoService.SignIn(userName);
+            // Act
+            var result = await cognitoService.InativarUsuario(userName);
 
-        //    // Assert
-        //    Assert.True(resultado.Sucesso);
-        //    Assert.NotNull(resultado.Value);
-        //    Assert.NotNull(resultado.Value.AccessToken);
-        //    Assert.NotNull(resultado.Value.TokenId);
-        //    Assert.NotEmpty(resultado.Value.AccessToken);
-        //    Assert.NotEmpty(resultado.Value.TokenId);
-        //    Assert.Equal(idToken, resultado.Value.TokenId);
-        //    Assert.Equal(accessToken, resultado.Value.AccessToken);
-        //}
-        #endregion
+            // Assert
+            Assert.True(result.Sucesso);
+        }
     }
 }

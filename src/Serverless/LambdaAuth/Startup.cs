@@ -39,8 +39,9 @@ public class Startup
 
         services.AddCognitoIdentity();
 
+        services.AddScoped<IPagamentoService, PagamentoService>();
         services.AddScoped<ICognitoService, CognitoService>();
-
+        
         services.AddScoped<ICognitoService>(x =>
         {
             var serviceProvider = services.BuildServiceProvider();
@@ -51,8 +52,6 @@ public class Startup
 
             return new CognitoService(opt, client, provider);
         });
-
-
     }
 
     public void Configure(IApplicationBuilder app, IHostingEnvironment env)

@@ -156,15 +156,15 @@ public class CognitoService : ICognitoService
                 UserPoolId = _awsOptions.UserPoolId
             };
 
-            AdminDisableUserResponse response = await _client.AdminDisableUserAsync(adminUser);
+            var response = await _client.AdminDisableUserAsync(adminUser);
 
             return response.HttpStatusCode == System.Net.HttpStatusCode.OK ? 
                     Resultado.Ok() : 
-                    Resultado.Falha($"Falha ao inativar usuário com o seguinte statusCode: {response.HttpStatusCode}");
+                    Resultado.Falha($"Houve algo de errado ao inativar o usuário.");
         }
         catch (NotAuthorizedException)
         {
-            return Resultado.Falha($"Falha ao realizar a inativação do usuário");
+            return Resultado.Falha($"Usuário não autorizado com os dados informados para inativação.");
         }
     }
 }

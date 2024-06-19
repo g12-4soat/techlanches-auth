@@ -107,6 +107,7 @@ public class Functions
     public async Task<APIGatewayProxyResponse> LambdaInativacao(APIGatewayProxyRequest request,
                                                  ILambdaContext context,
                                                  [FromServices] ICognitoService cognitoService,
+                                                 [FromServices] IPagamentoService pagamentoService,
                                                  [FromServices] IOptions<AWSOptions> awsOptions)
     {
         try
@@ -121,21 +122,24 @@ public class Functions
             if (usuarioEhPadrao)
                 return Response.BadRequest("Não é possível realizar a inativação deste usuário.");
 
-            var usuarioInativado = await cognitoService.InativarUsuario(usuario.Cpf);
+            var resultadoLogin = await cognitoService.SignIn(usuario.Cpf);
 
-            if (usuarioInativado.Falhou)
-                return Response.BadRequest(usuarioInativado.Notificacoes);
+            if (!resultadoLogin.Sucesso)
+                return Response.BadRequest(resultadoLogin.Notificacoes);
 
+            var pagamento = await pagamentoService.InativarDadosUsuarioPagamento(usuario.Cpf, resultadoLogin.Value.AccessToken);
+
+            if (pagamento.Falhou)
+                return Response.BadRequest(pagamento.Notificacoes);
 
             //se resultado positivo consumir endpoint de pagamento para inativacao dos dados
-            //trazer o retorno na tela.
+            var usuarioInativado = await cognitoService.InativarUsuario(usuario.Cpf);
 
-            var tokenResult = "Deu bom!";
-            return !string.IsNullOrEmpty(tokenResult) ? Response.Ok(tokenResult) : Response.BadRequest("Não possui token");
+            return Response.Ok("ok");
         }
         catch (Exception ex)
         {
-            Console.WriteLine("Cadastro Lambda response error: " + ex.Message);
+            Console.WriteLine("Inativação Lambda response error: " + ex.Message);
             throw new Exception(ex.Message);
         }
     }
@@ -153,7 +157,7 @@ public class Functions
         string email = usuario.Email ?? string.Empty;
         string nome = usuario.Nome ?? string.Empty;
         string endereco = usuario.Endereco ?? string.Empty; // verificar se vai criar classe para validar endereço com que será tratado
-        string telefone = usuario.Telefone ?? string.Empty; //+5511948796145 cenário positivo regra de validação criada 
+        string telefone = usuario.Telefone ?? string.Empty; 
         var user = new UsuarioDto(string.IsNullOrEmpty(cpfLimpo) ? cpf : cpfLimpo, email, nome, endereco, telefone);
         return user;
     }
