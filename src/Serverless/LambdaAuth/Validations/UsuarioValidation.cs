@@ -1,6 +1,5 @@
 using FluentValidation;
 using TechLanchesLambda.DTOs;
-using TechLanchesLambda.Utils;
 
 namespace TechLanchesLambda.Validations;
 
@@ -45,11 +44,5 @@ public class UsuarioCadastroValidation : AbstractValidator<UsuarioDto>
         RuleFor(x => x.Endereco)
          .NotEmpty().WithMessage("Endereço deve ser informado.")
          .NotNull().WithMessage("Endereço deve ser informado.");
-
-        //When(x => !string.IsNullOrEmpty(x.Endereco) && !string.IsNullOrWhiteSpace(x.Endereco), () =>
-        //{
-        //    RuleFor(x => x.Endereco)
-        //    .Must(ValidatorTelefone.Validar).WithMessage("O Endereço informado está inválido.");
-        //});
     }
 }

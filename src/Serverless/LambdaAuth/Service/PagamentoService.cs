@@ -1,18 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
-using TechLanchesLambda.Utils;
+﻿using TechLanchesLambda.Utils;
 
 namespace TechLanchesLambda.Service
 {
-    public interface IPagamentoService
-    {
-        Task<Resultado> InativarDadosUsuarioPagamento(string cpf, string token);
-    }
-
     public class PagamentoService : IPagamentoService
 
     {
@@ -20,27 +9,28 @@ namespace TechLanchesLambda.Service
 
         public PagamentoService(IHttpClientFactory httpClientFactory)
         {
-            _httpClient = httpClientFactory.CreateClient("pagamentos");
+            _httpClient = httpClientFactory.CreateClient(Constants.PAGAMENTOS);
         }
 
         public async Task<Resultado> InativarDadosUsuarioPagamento(string cpf, string token)
         {
             try
             {
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                //_httpClient.BaseAddress = new Uri($"http://localhost:5050/");
 
-                var content = new StringContent(string.Empty, Encoding.UTF8, "application/json");
+                //var content = new StringContent(string.Empty, Encoding.UTF8, "application/json");
 
-                var response = await _httpClient.PostAsync($"api/pagamentos/inativar-dados/{cpf}", content);
+                //var response = await _httpClient.PostAsync($"api/pagamentos/inativar/{cpf}", content);
 
-                if (response.IsSuccessStatusCode == false)
-                    return Resultado.Falha($"Erro durante chamada api de pedidos. Status Code:{response.StatusCode}. Response: {response}.");
+                //if (response.IsSuccessStatusCode == false)
+                //    return Resultado.Falha($"Erro durante chamada api de pedidos. Status Code:{response.StatusCode}. Response: {response}.");
 
-                string resultStr = await response.Content.ReadAsStringAsync();
+                //string resultStr = await response.Content.ReadAsStringAsync();
 
                 return Resultado.Ok();
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 return Resultado.Falha("Falha ao ler arquivo string.");
             }

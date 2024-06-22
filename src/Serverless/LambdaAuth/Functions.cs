@@ -127,15 +127,16 @@ public class Functions
             if (!resultadoLogin.Sucesso)
                 return Response.BadRequest(resultadoLogin.Notificacoes);
 
-            var pagamento = await pagamentoService.InativarDadosUsuarioPagamento(usuario.Cpf, resultadoLogin.Value.AccessToken);
+            var pagamentosUsuarioInativo = await pagamentoService.InativarDadosUsuarioPagamento(usuario.Cpf, resultadoLogin.Value.AccessToken);
 
-            if (pagamento.Falhou)
-                return Response.BadRequest(pagamento.Notificacoes);
+            if (pagamentosUsuarioInativo.Falhou)
+                return Response.BadRequest(pagamentosUsuarioInativo.Notificacoes);
 
-            //se resultado positivo consumir endpoint de pagamento para inativacao dos dados
             var usuarioInativado = await cognitoService.InativarUsuario(usuario.Cpf);
 
-            return Response.Ok("ok");
+            return usuarioInativado.Sucesso ? 
+                   Response.Ok(usuarioInativado.Value) : 
+                   Response.BadRequest(usuarioInativado.Notificacoes);
         }
         catch (Exception ex)
         {
@@ -156,7 +157,7 @@ public class Functions
         string cpfLimpo = ValidatorCPF.LimparCpf(cpf);
         string email = usuario.Email ?? string.Empty;
         string nome = usuario.Nome ?? string.Empty;
-        string endereco = usuario.Endereco ?? string.Empty; // verificar se vai criar classe para validar endereço com que será tratado
+        string endereco = usuario.Endereco ?? string.Empty;
         string telefone = usuario.Telefone ?? string.Empty; 
         var user = new UsuarioDto(string.IsNullOrEmpty(cpfLimpo) ? cpf : cpfLimpo, email, nome, endereco, telefone);
         return user;

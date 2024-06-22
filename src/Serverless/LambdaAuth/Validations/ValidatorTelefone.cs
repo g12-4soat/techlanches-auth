@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace TechLanchesLambda.Utils;
+namespace TechLanchesLambda.Validations;
 
 public static class ValidatorTelefone
 {

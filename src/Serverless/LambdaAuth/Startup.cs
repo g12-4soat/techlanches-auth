@@ -1,17 +1,17 @@
 using Amazon;
 using Amazon.CognitoIdentityProvider;
-using Amazon.Extensions.NETCore.Setup;
 using Amazon.Lambda.Annotations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using System;
-using TechLanchesLambda.AWS.Options;
 using TechLanchesLambda.AWS.SecretsManager;
 using TechLanchesLambda.Service;
+using TechLanchesLambda.Utils;
 using AWSOptions = TechLanchesLambda.AWS.Options.AWSOptions;
+using Polly;
+using System.Net;
 
 namespace TechLanchesLambda;
 
@@ -52,6 +52,20 @@ public class Startup
 
             return new CognitoService(opt, client, provider);
         });
+
+        ////Registrar httpclient
+        services.AddHttpClient(Constants.PAGAMENTOS, httpClient =>
+        {
+            //var url = Environment.GetEnvironmentVariable("PEDIDO_SERVICE");
+            var url = "localhost";
+            httpClient.BaseAddress = new Uri($"http://{url}:5050");
+        }).AddStandardResilienceHandler(options =>
+        {
+            options.Retry.ShouldHandle = new PredicateBuilder<HttpResponseMessage>()
+                .HandleResult(response => response.StatusCode == HttpStatusCode.InternalServerError);
+            options.Retry.MaxRetryAttempts = 5;
+            options.AttemptTimeout.Timeout = TimeSpan.FromSeconds(3);
+        }); 
     }
 
     public void Configure(IApplicationBuilder app, IHostingEnvironment env)

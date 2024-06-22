@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace TechLanchesLambda.Utils;
+namespace TechLanchesLambda.Validations;
 
 public static class ValidatorCPF
 {
@@ -22,7 +22,7 @@ public static class ValidatorCPF
             sum += int.Parse(cpfLimpo[i].ToString()) * (10 - i);
         }
         int remainder = sum % 11;
-        int firstDigit = (remainder < 2) ? 0 : 11 - remainder;
+        int firstDigit = remainder < 2 ? 0 : 11 - remainder;
 
         // Verifica o primeiro dígito verificador
         if (int.Parse(cpfLimpo[9].ToString()) != firstDigit)
@@ -37,7 +37,7 @@ public static class ValidatorCPF
             sum += int.Parse(cpfLimpo[i].ToString()) * (11 - i);
         }
         remainder = sum % 11;
-        int secondDigit = (remainder < 2) ? 0 : 11 - remainder;
+        int secondDigit = remainder < 2 ? 0 : 11 - remainder;
 
         // Verifica o segundo dígito verificador
         return int.Parse(cpfLimpo[10].ToString()) == secondDigit;
