@@ -9,34 +9,50 @@ public static class Response
 {
     public static APIGatewayProxyResponse BadRequest(List<NotificacaoDto> notificacoes)
     {
-        return new APIGatewayProxyResponse
+        var response = new APIGatewayProxyResponse
         {
             StatusCode = (int)HttpStatusCode.BadRequest,
             Body = JsonConvert.SerializeObject(notificacoes),
-            Headers = new Dictionary<string, string> { { "Content-Type", "application/jsonn" } }
+            Headers = new Dictionary<string, string> {
+                { "Content-Type", "application/jsonn"  },
+                { "X-Content-Type-Options", "nosniff" },
+                { "Strict-Transport-Security", "max-age=1; includeSubDomains; preload" }
+            }
         };
 
+        return response;
     }
+    
 
     public static APIGatewayProxyResponse BadRequest(string mensagem)
     {
-        return new APIGatewayProxyResponse
+        var response = new APIGatewayProxyResponse
         {
             StatusCode = (int)HttpStatusCode.BadRequest,
             Body = JsonConvert.SerializeObject(new NotificacaoDto(mensagem)),
-            Headers = new Dictionary<string, string> { { "Content-Type", "application/jsonn" } }
+            Headers = new Dictionary<string, string> {
+                { "Content-Type", "application/jsonn"  },
+                { "X-Content-Type-Options", "nosniff" },
+                { "Strict-Transport-Security", "max-age=1; includeSubDomains; preload" }
+            }
         };
 
+        return response;
     }
 
     public static APIGatewayProxyResponse Ok(object body)
     {
-        return new APIGatewayProxyResponse
+        var response = new APIGatewayProxyResponse
         {
             StatusCode = (int)HttpStatusCode.OK,
             Body = JsonConvert.SerializeObject(body),
-            Headers = new Dictionary<string, string> { { "Content-Type", "application/jsonn" } }
+            Headers = new Dictionary<string, string> {
+                { "Content-Type", "application/jsonn"  },
+                { "X-Content-Type-Options", "nosniff" },
+                { "Strict-Transport-Security", "max-age=1; includeSubDomains; preload" }
+            }
         };
 
+        return response;
     }
 }
