@@ -11,7 +11,7 @@ namespace TechLanchesLambda.Service
 
         public PagamentoService(IHttpClientFactory httpClientFactory)
         {
-            _httpClient = httpClientFactory.CreateClient(Constants.PAGAMENTOS);
+            _httpClient = httpClientFactory.CreateClient(Constants.NOME_API_PAGAMENTOS);
         }
 
         public PagamentoService(HttpClient httpClient)
@@ -23,15 +23,10 @@ namespace TechLanchesLambda.Service
         {
             try
             {
-                var teste2 = Environment.GetEnvironmentVariable("PAGAMENTO_SERVICE")!;
+                if (_httpClient == null)
+                    return Resultado.Falha("HTTP Client não foi configurado corretamente");
 
-                Console.WriteLine($"InativarDadosUsuarioPagamento get teste2 => {teste2}");
-
-                _httpClient.BaseAddress = new Uri("http://" + teste2 + ":5055"); 
-
-                Console.WriteLine($"InativarDadosUsuarioPagamento get BaseAddress.AbsoluteUri => {_httpClient?.BaseAddress?.AbsoluteUri}");
-
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                _httpClient!.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
                 //var content = new StringContent(string.Empty, Encoding.UTF8, "application/json");
 

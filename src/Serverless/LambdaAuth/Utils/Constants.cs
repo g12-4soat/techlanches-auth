@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TechLanchesLambda.Utils
+﻿namespace TechLanchesLambda.Utils
 {
     public static class Constants
     {
-        public const string PAGAMENTOS = "Pagamentos";
-        public const string PEDIDOS = "Pedidos";
+        public const string NOME_API_PAGAMENTOS = "Pagamentos";
+        public static string NOME_API_PEDIDO = "Pedidos";
     }
 }

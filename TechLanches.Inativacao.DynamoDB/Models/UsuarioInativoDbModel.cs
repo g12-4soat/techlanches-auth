@@ -19,11 +19,11 @@ namespace TechLanches.Inativacao.DynamoDB.Models
         }
 
         [DynamoDBHashKey]
-        public string Id { get; set; }
-        public string Cpf { get; set; }
-        public string Nome { get; set; }
-        public string Email { get; set; }
-        public string Endereco { get; set; }
-        public string Telefone { get; set; }
+        public string Id { get; set; } = default!;
+        public string Cpf { get; set; } = default!;
+        public string Nome { get; set; } = default!;
+        public string Email { get; set; } = default!;
+        public string Endereco { get; set; } = default!;
+        public string Telefone { get; set; } = default!;
     }
 }

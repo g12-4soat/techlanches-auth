@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TechLanchesLambda.AWS.SecretsManager;
-using AWSOptions = TechLanchesLambda.AWS.Options.AWSOptions;
 using TechLanchesLambda.Configuration;
+using AWSOptions = TechLanchesLambda.AWS.Options.AWSOptions;
 
 namespace TechLanchesLambda;
 

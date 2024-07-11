@@ -27,18 +27,6 @@ namespace TechLanchesLambda.Configuration
             services.AddScoped<IPedidoService, PedidoService>();
             services.AddScoped<ICognitoService, CognitoService>();
 
-            services.AddScoped<IPagamentoService>(x =>
-            {
-                var httpCliente = new HttpClient();
-                return new PagamentoService(httpCliente);
-            });
-
-            services.AddScoped<IPedidoService>(x =>
-            {
-                var httpCliente = new HttpClient();
-                return new PedidoService(httpCliente);
-            });
-
             services.AddScoped<ICognitoService>(x =>
             {
                 var serviceProvider = services.BuildServiceProvider();

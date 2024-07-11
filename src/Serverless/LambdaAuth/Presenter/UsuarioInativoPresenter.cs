@@ -1,9 +1,4 @@
 ﻿using Mapster;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TechLanches.Inativacao.DynamoDB.Models;
 using TechLanchesLambda.DTOs;
 
@@ -28,8 +23,6 @@ namespace TechLanchesLambda.Presenter
                 usuarioInativoDto.Email,
                 usuarioInativoDto.Endereco,
                 usuarioInativoDto.Telefone);
-
-            //=> usuarioInativoDto.Adapt<UsuarioInativoDbModel>();
         }
     }
 }

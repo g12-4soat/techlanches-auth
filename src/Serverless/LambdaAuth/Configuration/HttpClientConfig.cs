@@ -1,51 +1,31 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Polly;
-using System.Net;
+using Polly.Extensions.Http;
+using TechLanchesLambda.Service;
 using TechLanchesLambda.Utils;
 
-namespace TechLanchesLambda.Configuration
+namespace TechLanchesLambda.Configuration;
+
+public static class HttpClientConfig
 {
-    public static class HttpClientConfig
+    public static void AddHttpClientConfiguration(this IServiceCollection services)
     {
-        public static void AddHttpClientConfiguration(this IServiceCollection services)
+        //Criar uma politica de retry (tente 3x, com timeout de 3 segundos)
+        var retryPolicy = HttpPolicyExtensions.HandleTransientHttpError()
+                          .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(1));
+
+        //Registrar httpclient
+        services.AddHttpClient<IPedidoService, PedidoService>(Constants.NOME_API_PEDIDO, httpClient =>
         {
-            //var teste = Environment.GetEnvironmentVariable("TESTE")!;
+            var url = Environment.GetEnvironmentVariable("PEDIDO_SERVICE")!;
+            httpClient.BaseAddress = new Uri("http://" + url + ":5050");
 
-            //Console.WriteLine($"TESTE 01 => {teste}");
+        }).AddPolicyHandler(retryPolicy);
+        services.AddHttpClient<IPagamentoService, PagamentoService>(Constants.NOME_API_PAGAMENTOS, httpClient =>
+        {
+            var url = Environment.GetEnvironmentVariable("PAGAMENTO_SERVICE")!;
+            httpClient.BaseAddress = new Uri("http://" + url + ":5055");
 
-            var teste2 = Environment.GetEnvironmentVariable("PEDIDO_SERVICE")!;
-
-            var teste3 = Environment.GetEnvironmentVariable("PAGAMENTO_SERVICE")!;
-
-            Console.WriteLine($"PEDIDO_SERVICE DNS => {teste2}");
-            Console.WriteLine($"PAGAMENTO_SERVICE DNS => {teste3}");
-
-            services.AddHttpClient(Constants.PEDIDOS, httpClient =>
-            {
-                //var url = Environment.GetEnvironmentVariable("PEDIDO_SERVICE")!;
-
-                //httpClient.BaseAddress = new Uri("http://" + url + ":5050");
-            }).AddStandardResilienceHandler(options =>
-            {
-                options.Retry.ShouldHandle = new PredicateBuilder<HttpResponseMessage>()
-                    .HandleResult(response => response.StatusCode == HttpStatusCode.InternalServerError);
-                options.Retry.MaxRetryAttempts = 5;
-                options.AttemptTimeout.Timeout = TimeSpan.FromSeconds(3);
-            });
-
-            ////Registrar httpclient
-            services.AddHttpClient(Constants.PAGAMENTOS, httpClient =>
-            {
-                //var url = Environment.GetEnvironmentVariable("PAGAMENTO_SERVICE")!;
-
-                //httpClient.BaseAddress = new Uri("http://" + teste3 + ":5055");
-            }).AddStandardResilienceHandler(options =>
-            {
-                options.Retry.ShouldHandle = new PredicateBuilder<HttpResponseMessage>()
-                    .HandleResult(response => response.StatusCode == HttpStatusCode.InternalServerError);
-                options.Retry.MaxRetryAttempts = 5;
-                options.AttemptTimeout.Timeout = TimeSpan.FromSeconds(3);
-            });
-        }
+        }).AddPolicyHandler(retryPolicy);
     }
 }

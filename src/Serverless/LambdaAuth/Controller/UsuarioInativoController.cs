@@ -28,9 +28,10 @@ namespace TechLanchesLambda.Controller
             {
                 var usuarioInativoModel = _usuarioInativoPresenter.ParaModel(usuarioInativacao);
 
-                var res = await UsuarioInativoUseCase.Cadastrar(usuarioInativoModel, _usuarioInativoGateway);
+                var response = await UsuarioInativoUseCase.Cadastrar(usuarioInativoModel, _usuarioInativoGateway);
 
-                return res is not null ? Resultado.Ok() : Resultado.Falha("Falha ao realizar a solicitação de inativação do usuário.");
+                return response is not null 
+                    ? Resultado.Ok() : Resultado.Falha("Falha ao realizar a solicitação de inativação do usuário.");
             }
             catch(Exception ex)
             {
