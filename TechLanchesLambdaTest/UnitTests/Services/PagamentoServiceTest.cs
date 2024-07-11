@@ -1,9 +1,8 @@
-﻿using NSubstitute;
-using System.Text;
-using TechLanchesLambda.Utils;
-using TechLanchesLambda.Service;
+﻿using TechLanchesLambda.Service;
 using System.Net;
 using TechLanchesLambdaTest.UnitTests.Fixtures;
+using TechLanchesLambdaTest.UnitTests.Utils;
+using TechLanchesLambda.Utils;
 
 namespace TechLanchesLambdaTest.UnitTests.Services
 {
@@ -11,11 +10,9 @@ namespace TechLanchesLambdaTest.UnitTests.Services
     public class PagamentoServiceTest : IClassFixture<PagamentoServiceFixture>
     {
         private readonly PagamentoServiceFixture _pagamentoServiceFixture;
-        //private readonly IHttpClientFactory _httpClient;
 
         public PagamentoServiceTest(PagamentoServiceFixture pagamentoServiceFixture)
         {
-            //_httpClient = Substitute.For<IHttpClientFactory>().CreateClient(Constants.PAGAMENTOS);
             _pagamentoServiceFixture = pagamentoServiceFixture;
         }
 
@@ -25,30 +22,19 @@ namespace TechLanchesLambdaTest.UnitTests.Services
             // Arrange
             var cpf = _pagamentoServiceFixture.GerarCpf();
             var token = _pagamentoServiceFixture.GerarToken();
-            var pagamentoUrl = _pagamentoServiceFixture.GerarUrlPagamento();
 
-            var httpClientFactory = Substitute.For<IHttpClientFactory>();
-            var httpClient = Substitute.For<HttpClient>();
+            var mockHttpMessageHandler = new MockHttpMessageHandler(String.Empty, HttpStatusCode.OK);
+            var mockHttpClient = new HttpClient(mockHttpMessageHandler);
+            mockHttpClient.BaseAddress = new Uri($"http://localhost:5050/");
 
-            httpClientFactory.CreateClient(Constants.PAGAMENTOS).Returns(httpClient);
-
-            var httpResponseMessage = new HttpResponseMessage
-            {
-                StatusCode = HttpStatusCode.OK,
-                Content = new StringContent(string.Empty, Encoding.UTF8, "application/json")
-            };
-
-            httpClient
-                .PostAsync(Arg.Is<string>(uri => uri == pagamentoUrl), Arg.Any<StringContent>())
-                .Returns(Task.FromResult(httpResponseMessage));
-
-            var service = new PagamentoService(httpClientFactory);
+            var pagamentoService = new PagamentoService(mockHttpClient);
 
             // Act
-            var resultado = await service.InativarDadosUsuarioPagamento(cpf, token);
+            var resultado = await pagamentoService.InativarDadosUsuarioPagamento(cpf, token);
 
             // Assert
-            Assert.Equal(Resultado.Ok(), resultado);
+            Assert.True(resultado.Sucesso);
+            Assert.True(resultado.Notificacoes.Count == 0);
         }
 
         [Fact(DisplayName = "Inativar dados de pagamento do usuário com falha")]
@@ -57,31 +43,39 @@ namespace TechLanchesLambdaTest.UnitTests.Services
             // Arrange
             var cpf = _pagamentoServiceFixture.GerarCpf();
             var token = _pagamentoServiceFixture.GerarToken();
-            var pagamentoUrl = _pagamentoServiceFixture.GerarUrlPagamento();
 
-            var httpClientFactory = Substitute.For<IHttpClientFactory>();
-            var httpClient = Substitute.For<HttpClient>();
+            var mockHttpMessageHandler = new MockHttpMessageHandler(String.Empty, HttpStatusCode.BadRequest);
+            var mockHttpClient = new HttpClient(mockHttpMessageHandler);
+            mockHttpClient.BaseAddress = new Uri($"http://localhost:5050/");
 
-            httpClientFactory.CreateClient(Constants.PAGAMENTOS).Returns(httpClient);
-
-            var httpResponseMessage = new HttpResponseMessage
-            {
-                StatusCode = HttpStatusCode.InternalServerError,
-                Content = new StringContent(string.Empty, Encoding.UTF8, "application/json")
-            };
-
-            httpClient
-                .PostAsync(Arg.Is<string>(uri => uri == pagamentoUrl), Arg.Any<StringContent>())
-                .Returns(Task.FromResult(httpResponseMessage));
-
-            var service = new PagamentoService(httpClientFactory);
+            var pagamentoService = new PagamentoService(mockHttpClient);
 
             // Act
-            var resultado = await service.InativarDadosUsuarioPagamento(cpf, token);
+            var resultado = await pagamentoService.InativarDadosUsuarioPagamento(cpf, token);
 
             // Assert
             Assert.False(resultado.Sucesso);
             Assert.Contains(_pagamentoServiceFixture.ObterMensagemFalha("inativar_usuario"), resultado.Notificacoes.FirstOrDefault().Mensagem);
+        }
+
+        [Fact(DisplayName = "Inativar dados de pagamento do usuário com exceção")]
+        public async Task Inativar_DadosUsuarioPagamento_DeveRetornarExcecao()
+        {
+            // Arrange
+            var cpf = _pagamentoServiceFixture.GerarCpf();
+            var token = _pagamentoServiceFixture.GerarToken();
+
+            var mockHttpMessageHandler = new MockHttpMessageHandler(new HttpRequestException());
+            var httpClient = new HttpClient(mockHttpMessageHandler);
+
+            var pagamentoService = new PagamentoService(httpClient);
+
+            // Act
+            var resultado = await pagamentoService.InativarDadosUsuarioPagamento(cpf, token);
+
+            // Assert
+            Assert.False(resultado.Sucesso);
+            Assert.Equal(_pagamentoServiceFixture.ObterMensagemFalha("inativar_usuario_excecao"), resultado.Notificacoes.FirstOrDefault().Mensagem);
         }
     }
 }

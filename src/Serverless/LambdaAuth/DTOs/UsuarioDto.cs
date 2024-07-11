@@ -1,3 +1,3 @@
 namespace TechLanchesLambda.DTOs;
 
-public record class UsuarioDto(string Cpf = "", string Email = "", string Nome = "", string Endereco = "", string Telefone = "");
+public record class UsuarioDto(string Cpf = "", string Email = "", string Nome = "");

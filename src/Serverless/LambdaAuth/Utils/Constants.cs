@@ -9,5 +9,6 @@ namespace TechLanchesLambda.Utils
     public static class Constants
     {
         public const string PAGAMENTOS = "Pagamentos";
+        public const string PEDIDOS = "Pedidos";
     }
 }

@@ -48,9 +48,7 @@ public class CognitoService : ICognitoService
                 UserAttributes = new List<AttributeType>
                 {
                     new AttributeType {Name = "email", Value = user.Email },
-                    new AttributeType {Name = "name", Value = user.Nome },
-                    new AttributeType {Name = "phone_number", Value = user.Telefone },
-                    new AttributeType {Name = "address", Value = user.Endereco }
+                    new AttributeType {Name = "name", Value = user.Nome }
                 }
             };
 

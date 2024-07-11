@@ -30,19 +30,5 @@ public class UsuarioCadastroValidation : AbstractValidator<UsuarioDto>
         RuleFor(x => x.Nome)
             .NotEmpty().WithMessage("Nome deve ser informado.")
             .NotNull().WithMessage("Nome deve ser informado.");
-
-        RuleFor(x => x.Telefone)
-          .NotEmpty().WithMessage("Telefone deve ser informado.")
-          .NotNull().WithMessage("Telefone deve ser informado.");
-
-        When(x => !string.IsNullOrEmpty(x.Telefone) && !string.IsNullOrWhiteSpace(x.Telefone), () =>
-        {
-            RuleFor(x => x.Telefone)
-            .Must(ValidatorTelefone.Validar).WithMessage("O Telefone informado está inválido.");
-        });
-
-        RuleFor(x => x.Endereco)
-         .NotEmpty().WithMessage("Endereço deve ser informado.")
-         .NotNull().WithMessage("Endereço deve ser informado.");
     }
 }
