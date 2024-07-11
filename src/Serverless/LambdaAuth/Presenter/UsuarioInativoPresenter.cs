@@ -21,6 +21,15 @@ namespace TechLanchesLambda.Presenter
             => usuarioInativoModel.Adapt<UsuarioInativacaoDto>();
 
         public UsuarioInativoDbModel ParaModel(UsuarioInativacaoDto usuarioInativoDto)
-            => usuarioInativoDto.Adapt<UsuarioInativoDbModel>();
+        {
+            return new UsuarioInativoDbModel(
+                usuarioInativoDto.Cpf,
+                usuarioInativoDto.Nome,
+                usuarioInativoDto.Email,
+                usuarioInativoDto.Endereco,
+                usuarioInativoDto.Telefone);
+
+            //=> usuarioInativoDto.Adapt<UsuarioInativoDbModel>();
+        }
     }
 }

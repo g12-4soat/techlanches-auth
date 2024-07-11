@@ -9,25 +9,22 @@ namespace TechLanchesLambda.Configuration
     {
         public static void AddHttpClientConfiguration(this IServiceCollection services)
         {
-            var teste = Environment.GetEnvironmentVariable("TESTE")!;
+            //var teste = Environment.GetEnvironmentVariable("TESTE")!;
 
-            Console.WriteLine($"TESTE 01 => {teste}");
+            //Console.WriteLine($"TESTE 01 => {teste}");
 
             var teste2 = Environment.GetEnvironmentVariable("PEDIDO_SERVICE")!;
 
             var teste3 = Environment.GetEnvironmentVariable("PAGAMENTO_SERVICE")!;
 
             Console.WriteLine($"PEDIDO_SERVICE DNS => {teste2}");
-            Console.WriteLine($"PEDIDO_SERVICE DNS => {teste3}");
+            Console.WriteLine($"PAGAMENTO_SERVICE DNS => {teste3}");
 
             services.AddHttpClient(Constants.PEDIDOS, httpClient =>
             {
-                var url = Environment.GetEnvironmentVariable("PEDIDO_SERVICE")!;
+                //var url = Environment.GetEnvironmentVariable("PEDIDO_SERVICE")!;
 
-                Console.WriteLine($"PEDIDO_SERVICE DNS NO HTTPCLIENT => {url}");
-
-                //Console.WriteLine("Teste URL PEDIDO_SERVICE => " + url);
-                httpClient.BaseAddress = new Uri("http://" + teste2 + ":5050");
+                //httpClient.BaseAddress = new Uri("http://" + url + ":5050");
             }).AddStandardResilienceHandler(options =>
             {
                 options.Retry.ShouldHandle = new PredicateBuilder<HttpResponseMessage>()
@@ -39,10 +36,9 @@ namespace TechLanchesLambda.Configuration
             ////Registrar httpclient
             services.AddHttpClient(Constants.PAGAMENTOS, httpClient =>
             {
-                var url = Environment.GetEnvironmentVariable("PAGAMENTO_SERVICE")!;
+                //var url = Environment.GetEnvironmentVariable("PAGAMENTO_SERVICE")!;
 
-                //Console.WriteLine("Teste URL PAGAMENTO_SERVICE => " + url);
-                httpClient.BaseAddress = new Uri("http://" + teste3 + ":5055");
+                //httpClient.BaseAddress = new Uri("http://" + teste3 + ":5055");
             }).AddStandardResilienceHandler(options =>
             {
                 options.Retry.ShouldHandle = new PredicateBuilder<HttpResponseMessage>()
@@ -50,7 +46,6 @@ namespace TechLanchesLambda.Configuration
                 options.Retry.MaxRetryAttempts = 5;
                 options.AttemptTimeout.Timeout = TimeSpan.FromSeconds(3);
             });
-
         }
     }
 }
