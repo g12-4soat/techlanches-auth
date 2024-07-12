@@ -1,6 +1,5 @@
 using FluentValidation;
 using TechLanchesLambda.DTOs;
-using TechLanchesLambda.Utils;
 
 namespace TechLanchesLambda.Validations;
 

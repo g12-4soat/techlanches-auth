@@ -5,6 +5,7 @@ using Amazon.Lambda.Core;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using TechLanchesLambda.AWS.Options;
+using TechLanchesLambda.Controller;
 using TechLanchesLambda.DTOs;
 using TechLanchesLambda.Service;
 using TechLanchesLambda.Utils;
@@ -102,12 +103,67 @@ public class Functions
         }
     }
 
+    [LambdaFunction(Policies = "AWSLambdaBasicExecutionRole", MemorySize = 512, Timeout = 30)]
+    [RestApi(LambdaHttpMethod.Post, "/inativacao")]
+    public async Task<APIGatewayProxyResponse> LambdaInativacao(APIGatewayProxyRequest request,
+                                                 ILambdaContext context,
+                                                 [FromServices] ICognitoService cognitoService,
+                                                 [FromServices] IPagamentoService pagamentoService,
+                                                 [FromServices] IPedidoService pedidoService,
+                                                 [FromServices] IUsuarioInativoController usuarioInativoController,
+                                                 [FromServices] IOptions<AWSOptions> awsOptions)
+    {
+        try
+        {
+            context.Logger.LogInformation("Handling the 'LambdaInativacao' Request");
+
+            ArgumentNullException.ThrowIfNull(awsOptions);
+
+            var usuario = ObterUsuarioInativacao(request, awsOptions.Value);
+            var usuarioEhPadrao = usuario.Cpf.Equals(awsOptions.Value.UserTechLanches);
+
+            if (usuarioEhPadrao)
+                return Response.BadRequest("Não é possível realizar a inativação deste usuário.");
+
+            var resultadoLogin = await cognitoService.SignIn(usuario.Cpf);
+
+            if (!resultadoLogin.Sucesso)
+                return Response.BadRequest(resultadoLogin.Notificacoes);
+
+            var cadastrarInativacaoUsuario = await usuarioInativoController.Cadastrar(usuario);
+
+            if (!cadastrarInativacaoUsuario.Sucesso)
+                return Response.BadRequest(cadastrarInativacaoUsuario.Notificacoes);
+
+            var pagamentosUsuarioInativo = await pagamentoService.InativarDadosUsuarioPagamento(usuario.Cpf, resultadoLogin.Value.AccessToken);
+
+            if (pagamentosUsuarioInativo.Falhou)
+                return Response.BadRequest(pagamentosUsuarioInativo.Notificacoes);
+
+            var pedidosUsuarioInativo = await pedidoService.InativarDadosUsuarioPedido(usuario.Cpf, resultadoLogin.Value.AccessToken);
+
+            if (pedidosUsuarioInativo.Falhou)
+                return Response.BadRequest(pedidosUsuarioInativo.Notificacoes);
+
+            var usuarioInativado = await cognitoService.InativarUsuario(usuario.Cpf);
+
+            return usuarioInativado.Sucesso ? 
+                   Response.Ok(usuarioInativado.Value) : 
+                   Response.BadRequest(usuarioInativado.Notificacoes);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Inativação Lambda response error: " + ex.Message);
+            throw new Exception(ex.Message);
+        }
+    }
+
     private UsuarioDto ObterUsuario(APIGatewayProxyRequest request, AWSOptions awsOptions, bool ehCadastro)
     {
         var usuario = JsonConvert.DeserializeObject<UsuarioDto>(request.Body) ?? new UsuarioDto();
         ArgumentNullException.ThrowIfNull(usuario);
 
-        if (!CpfFoiInformado(usuario) && !ehCadastro)
+        if (!CpfFoiInformado(usuario.Cpf) && !ehCadastro)
             return new UsuarioDto(awsOptions.UserTechLanches, awsOptions.EmailDefault, awsOptions.UserTechLanches);
 
         string cpf = usuario.Cpf ?? string.Empty;
@@ -118,8 +174,26 @@ public class Functions
         return user;
     }
 
-    private bool CpfFoiInformado(UsuarioDto usuario)
+    private UsuarioInativacaoDto ObterUsuarioInativacao(APIGatewayProxyRequest request, AWSOptions awsOptions)
     {
-        return !string.IsNullOrEmpty(usuario.Cpf) && !string.IsNullOrWhiteSpace(usuario.Cpf);
+        var usuario = JsonConvert.DeserializeObject<UsuarioInativacaoDto>(request.Body) ?? new UsuarioInativacaoDto();
+        ArgumentNullException.ThrowIfNull(usuario);
+
+        if (!CpfFoiInformado(usuario.Cpf))
+            return new UsuarioInativacaoDto(awsOptions.UserTechLanches, awsOptions.EmailDefault, awsOptions.UserTechLanches);
+
+        string cpf = usuario.Cpf ?? string.Empty;
+        string cpfLimpo = ValidatorCPF.LimparCpf(cpf);
+        string email = usuario.Email ?? string.Empty;
+        string nome = usuario.Nome ?? string.Empty;
+        string endereco = usuario.Endereco ?? string.Empty;
+        string telefone = usuario.Telefone ?? string.Empty;
+        var user = new UsuarioInativacaoDto(string.IsNullOrEmpty(cpfLimpo) ? cpf : cpfLimpo, nome, email, endereco, telefone);
+        return user;
+    }
+
+    private bool CpfFoiInformado(string cpf)
+    {
+        return !string.IsNullOrEmpty(cpf) && !string.IsNullOrWhiteSpace(cpf);
     }
 }

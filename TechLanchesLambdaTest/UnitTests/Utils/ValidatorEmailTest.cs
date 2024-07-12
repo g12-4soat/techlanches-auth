@@ -1,5 +1,5 @@
 ﻿using NSubstitute;
-using TechLanchesLambda.Utils;
+using TechLanchesLambda.Validations;
 using TechLanchesLambdaTest.UnitTests.Fixtures;
 
 namespace TechLanchesLambdaTest.UnitTests.Utils

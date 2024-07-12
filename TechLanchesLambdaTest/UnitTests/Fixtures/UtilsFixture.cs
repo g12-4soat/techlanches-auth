@@ -40,6 +40,11 @@ namespace TechLanchesLambdaTest.UnitTests.Fixtures
         public string GerarEmailInvalido()
             => "test.xpto@gmail";
 
+        public string GerarTelefoneValido()
+           => "+5511948792154";
+
+        public string GerarTelefoneInvalido()
+            => "5511948792154";
         public void Dispose()
         {
         }

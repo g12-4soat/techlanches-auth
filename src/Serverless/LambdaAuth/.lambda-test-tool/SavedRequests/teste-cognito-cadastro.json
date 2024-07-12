@@ -1,5 +1,5 @@
 {
-  "body": "{\"cpf\":\"603.335.500-80\", \"email\":\"maria_silva.xpto@gmail.com\", \"nome\":\"Maria Silva\",\"telefone\":\"+5511948792154\",\"endereco\":\"rua xpto n: 123 Pq Santa Rosa, CEP: 62458-080 São Paulo-SP\"}",
+  "body": "{\"cpf\":\"603.335.500-80\", \"email\":\"maria_silva.xpto@gmail.com\", \"nome\":\"Maria Silva\"}",
   "resource": "/{proxy+}",
   "path": "/path/to/resource",
   "httpMethod": "POST",

@@ -1,16 +1,10 @@
-using Amazon;
-using Amazon.CognitoIdentityProvider;
-using Amazon.Extensions.NETCore.Setup;
 using Amazon.Lambda.Annotations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using System;
-using TechLanchesLambda.AWS.Options;
 using TechLanchesLambda.AWS.SecretsManager;
-using TechLanchesLambda.Service;
+using TechLanchesLambda.Configuration;
 using AWSOptions = TechLanchesLambda.AWS.Options.AWSOptions;
 
 namespace TechLanchesLambda;
@@ -39,20 +33,14 @@ public class Startup
 
         services.AddCognitoIdentity();
 
-        services.AddScoped<ICognitoService, CognitoService>();
+        //DI Abstraction
+        services.AddDependencyInjectionConfiguration();
 
-        services.AddScoped<ICognitoService>(x =>
-        {
-            var serviceProvider = services.BuildServiceProvider();
-            var opt = serviceProvider.GetRequiredService<IOptions<AWSOptions>>();
+        //Setting mapster
+        services.AddRegisterMapsConfiguration();
 
-            var provider = new AmazonCognitoIdentityProviderClient(RegionEndpoint.GetBySystemName(opt.Value.Region));
-            var client = new AmazonCognitoIdentityProviderClient();
-
-            return new CognitoService(opt, client, provider);
-        });
-
-
+        //Setting http client
+        services.AddHttpClientConfiguration();
     }
 
     public void Configure(IApplicationBuilder app, IHostingEnvironment env)

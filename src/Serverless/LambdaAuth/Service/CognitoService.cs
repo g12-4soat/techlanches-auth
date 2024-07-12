@@ -2,16 +2,11 @@
 using Amazon.CognitoIdentityProvider;
 using Amazon.CognitoIdentityProvider.Model;
 using Amazon.Extensions.CognitoAuthentication;
-using Amazon.Runtime.Internal;
 using Microsoft.Extensions.Options;
-using System.Collections;
-using TechLanchesLambda.AWS.Options;
 using TechLanchesLambda.DTOs;
 using TechLanchesLambda.Utils;
 
 namespace TechLanchesLambda.Service;
-
-
 
 public class CognitoService : ICognitoService
 {
@@ -40,7 +35,7 @@ public class CognitoService : ICognitoService
         if (await UsuarioJaExiste(user))
         {
             var ehUsuarioPadrao = user.Cpf.Equals(_awsOptions.UserTechLanches);
-            return ehUsuarioPadrao ? Resultado.Ok() : Resultado.Falha("Usuário já cadastrado. Por favor tente autenticarr.");
+            return ehUsuarioPadrao ? Resultado.Ok() : Resultado.Falha("Usuário já cadastrado. Por favor tente autenticar.");
         }
 
         try
@@ -141,6 +136,28 @@ public class CognitoService : ICognitoService
         catch (NotAuthorizedException)
         {
             return Resultado.Falha("Não foi possível confirmar o usuárioo.");
+        }
+    }
+
+    public async Task<Resultado<InativacaoDto>> InativarUsuario(string userName)
+    {
+        try
+        {
+            AdminDisableUserRequest adminUser = new AdminDisableUserRequest
+            {
+                Username = userName,
+                UserPoolId = _awsOptions.UserPoolId
+            };
+
+            var response = await _client.AdminDisableUserAsync(adminUser);
+
+            return response.HttpStatusCode == System.Net.HttpStatusCode.OK ? 
+                   Resultado.Ok(new InativacaoDto("Usuário inativado com sucesso.")) : 
+                   Resultado.Falha<InativacaoDto>($"Houve algo de errado ao inativar o usuário.");
+        }
+        catch (NotAuthorizedException)
+        {
+            return Resultado.Falha<InativacaoDto>($"Usuário não autorizado com os dados informados para inativação.");
         }
     }
 }
