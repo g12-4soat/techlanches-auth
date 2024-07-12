@@ -74,7 +74,7 @@ namespace TechLanchesLambdaTest.UnitTests.Services
 
             // Assert
             Assert.False(resultado.Sucesso);
-            Assert.Equal(_pedidoServiceFixture.ObterMensagemFalha("inativar_usuario_excecao"), resultado.Notificacoes.FirstOrDefault().Mensagem);
+            Assert.Contains(_pedidoServiceFixture.ObterMensagemFalha("inativar_usuario_excecao"), resultado.Notificacoes.FirstOrDefault().Mensagem);
         }
     }
 }

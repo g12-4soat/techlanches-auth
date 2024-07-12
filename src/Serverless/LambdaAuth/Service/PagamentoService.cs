@@ -28,8 +28,6 @@ namespace TechLanchesLambda.Service
 
                 _httpClient!.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-                //var content = new StringContent(string.Empty, Encoding.UTF8, "application/json");
-
                 var response = await _httpClient.DeleteAsync($"api/pagamentos/inativar/{cpf}");
 
                 var contentStr = await response.Content.ReadAsStringAsync();
