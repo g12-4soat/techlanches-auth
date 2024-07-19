@@ -1,7 +1,7 @@
 <p dir="auto"><img src="https://github.com/g12-4soat/tech-lanches/blob/main/src/TechLanches/Adapter/Driver/TechLanches.Adapter.API/wwwroot/SwaggerUI/images/android-chrome-192x192.png" alt="TECHLANCHES" title="TECHLANCHES" align="right" height="60" style="max-width: 100%;"></p>
 
 # Tech Lanches Auth
-Projeto Tech Challenge Fase 4
+Projeto Tech Challenge Fase 5
 
 Repositório dedicado ao projeto de autenticação do TechChallenge da FIAP - Turma 4SOAT.
 
