@@ -58,8 +58,8 @@ Da raiz do repositório, execute os seguintes comandos no terminal:
 
 ## Postman 
 Para importar as collections do postman, basta acessar os links a seguir:
-- Collection: https://github.com/g12-4soat/techlanches-auth/blob/main/docs/fase3/LambdaTechLanches.postman_collection.json
-- Local Environment: https://github.com/g12-4soat/techlanches-auth/blob/main/docs/fase3/TechLanchesGateway.postman_environment.json
+- Collection: https://github.com/g12-4soat/techlanches-docs/blob/main/docs/fase5/collections-postman/Tech%20Lanches%20Fase%205%20Auth.postman_collection.json
+- Local Environment: https://github.com/g12-4soat/techlanches-docs/blob/main/docs/fase5/collections-postman/TechLanches.postman_environment.json
 
 > Quando uma nova instância do API Gateway é criada, uma nova URL é gerada, exigindo a atualização manual da URL na Enviroment do Postman.
   ---
